@@ -5,6 +5,6 @@ import { Query, Resolver } from "@nestjs/graphql";
 export class AppResolver {
     @Query()
     hello() {
-        return 'hello, world!';
+        return 'hello, tomato!';
     }
 }
