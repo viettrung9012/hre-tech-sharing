@@ -1,5 +1,8 @@
 {
-  "restart": {
+  "restart" : {
+    "exclude": [
+      "^dist/"
+    ],
     "include": [
       "\\.ts$",
       "\\.graphql$"
