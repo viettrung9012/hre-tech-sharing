@@ -1,0 +1,8 @@
+type Mutation {
+    addTask(
+        summary: String!
+        dueDate: String
+        category: String
+        priority: Int
+    ): Task
+}

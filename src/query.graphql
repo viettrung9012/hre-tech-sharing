@@ -1,3 +1,9 @@
 type Query {
     hello: String!
+
+    getTasks(
+        id: Int
+        priority: Int
+        category: String
+    ): [Task]
 }
