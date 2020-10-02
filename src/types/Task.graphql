@@ -1,0 +1,7 @@
+type Task {
+    id: Int!
+    summary: String!
+    dueDate: String
+    priority: Int
+    category: String
+}
