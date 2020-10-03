@@ -1,0 +1,23 @@
+[
+  {
+    "id": 0,
+    "summary": "Create GraphQL endpoint",
+    "dueDate": "03/10/20",
+    "priority": 1,
+    "category": "work"
+  },
+  {
+    "id": 1,
+    "summary": "Create REST endpoint",
+    "dueDate": "04/10/20",
+    "priority": 1,
+    "category": "work"
+  },
+  {
+    "id": 2,
+    "summary": "Buy milk",
+    "dueDate": "05/10/20",
+    "priority": 3,
+    "category": "daily"
+  }
+]
