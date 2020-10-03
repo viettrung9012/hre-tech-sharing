@@ -5,4 +5,14 @@ type Mutation {
         category: String
         priority: Int
     ): Task
+
+    updateTask(
+        id: Int!
+        summary: String
+        dueDate: String
+        category: String
+        priority: Int
+    ): Task
+
+    deleteTask(id: Int!): String
 }

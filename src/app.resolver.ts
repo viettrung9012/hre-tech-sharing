@@ -41,4 +41,40 @@ export class AppResolver {
         this.dataService.updateDataFiles(updatedTasks);
         return newTask;
     }
+
+    @Mutation()
+    async updateTask(
+      @Args('id') id: number,
+      @Args('summary') summary?: string,
+      @Args('dueDate') dueDate?: string,
+      @Args('category') category?: string,
+      @Args('priority') priority?: number
+    ) {
+        const tasks = await this.dataService.getData();
+        const taskToBeUpdated = tasks.findIndex((task) => task.id === id);
+        if (taskToBeUpdated === -1) return Error('Task not found');
+        const updatedDetails = this.deleteUndefinedKeys({ summary, dueDate, category, priority });
+        tasks[taskToBeUpdated] = Object.assign({}, tasks[taskToBeUpdated], updatedDetails);
+        this.dataService.updateDataFiles(tasks);
+        return tasks[taskToBeUpdated];
+    }
+
+    @Mutation()
+    async deleteTask(
+      @Args('id') id: number
+    ) {
+        const tasks = await this.dataService.getData();
+        const taskToBeUpdated = tasks.findIndex((task) => task.id === id);
+        if (taskToBeUpdated === -1) return Error('Task not found');
+        tasks.splice(taskToBeUpdated, 1);
+        this.dataService.updateDataFiles(tasks);
+        return `Task ${id} Deleted`;
+    }
+
+    deleteUndefinedKeys(data: any) {
+        for (const key of Object.keys(data)) {
+            if (data[key] === undefined) delete data[key]
+        }
+        return data;
+    }
 }
