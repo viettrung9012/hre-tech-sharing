@@ -36,7 +36,7 @@ export class AppResolver {
       @Args('priority') priority?: number
     ): Promise<Task> {
         const tasks: Task[] = await this.dataService.getData(DataTypes.Task);
-        const categoryObject = await this.getCategory(category);
+        const categoryObject = await this.dataService.getCategory(category);
         const lastId = tasks[tasks.length - 1].id;
         const newTask: Task = { id: lastId + 1, summary, dueDate, category: categoryObject, priority };
         const updatedTasks = tasks.concat(newTask);
@@ -55,8 +55,8 @@ export class AppResolver {
         const tasks = await this.dataService.getData(DataTypes.Task);
         const taskToBeUpdated = tasks.findIndex((task) => task.id === id);
         if (taskToBeUpdated === -1) return Error('Task not found');
-        const categoryObject = await this.getCategory(category);
-        const updatedDetails = this.deleteUndefinedKeys({ summary, dueDate, category: categoryObject, priority });
+        const categoryObject = await this.dataService.getCategory(category);
+        const updatedDetails = this.dataService.deleteUndefinedKeys({ summary, dueDate, category: categoryObject, priority });
         tasks[taskToBeUpdated] = Object.assign({}, tasks[taskToBeUpdated], updatedDetails);
         this.dataService.updateDataFiles(tasks, DataTypes.Task);
         return tasks[taskToBeUpdated];
@@ -72,20 +72,5 @@ export class AppResolver {
         tasks.splice(taskToBeUpdated, 1);
         this.dataService.updateDataFiles(tasks, DataTypes.Task);
         return `Task ${id} Deleted`;
-    }
-
-    async getCategory(categoryName: string): Promise<Category> {
-        if (categoryName) {
-            const categories: Category[] = await this.dataService.getData(DataTypes.Category);
-            return  categories.find((category) => category.name === categoryName);
-        }
-        return undefined;
-    }
-
-    deleteUndefinedKeys(data: any) {
-        for (const key of Object.keys(data)) {
-            if (data[key] === undefined) delete data[key]
-        }
-        return data;
     }
 }
