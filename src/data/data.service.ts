@@ -20,4 +20,17 @@ export class DataService {
       console.log("writing to " + file);
     });
   }
+  returnUndefinedKeys(data: any) {
+    for (const key of Object.keys(data)) {
+        if (data[key] === undefined)  data[key] = ""
+    }
+    return data;
+  }
+
+  deleteUndefinedKeys(data: any) {
+    for (const key of Object.keys(data)) {
+        if (data[key] === undefined) delete data[key]
+    }
+    return data;
+  }
 }
