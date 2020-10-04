@@ -17,10 +17,15 @@ export interface IQuery {
     getTasks(id?: number, priority?: number, category?: string): Task[] | Promise<Task[]>;
 }
 
+export interface Category {
+    id: number;
+    name: string;
+}
+
 export interface Task {
     id: number;
     summary: string;
     dueDate?: string;
     priority?: number;
-    category?: string;
+    category?: Category;
 }

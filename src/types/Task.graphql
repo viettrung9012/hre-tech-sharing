@@ -3,5 +3,5 @@ type Task {
     summary: String!
     dueDate: String
     priority: Int
-    category: String
+    category: Category
 }

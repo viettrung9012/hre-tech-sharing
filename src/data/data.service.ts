@@ -1,17 +1,18 @@
-import { Task } from '../graphql';
 import { writeFile } from "fs";
 import { join, resolve } from 'path';
+import { DataTypes } from './config';
+
 
 export class DataService {
-  async getData(): Promise<Task[]> {
-    delete require.cache[require.resolve("./tasks.json")];
-    return (await import("./tasks.json")).default;
+  async getData(dataType: DataTypes): Promise<any[]> {
+    delete require.cache[require.resolve(`./${dataType}.json`)];
+    return (await import(`./${dataType}.json`)).default;
   }
 
-  updateDataFiles(updatedData: Task[]) {
+  updateDataFiles(updatedData: any[], dataType: DataTypes) {
     const dataString = JSON.stringify(updatedData, null, 2);
-    this.writeDataToFile(dataString, join(__dirname, "tasks.json"));
-    this.writeDataToFile(dataString, join(resolve(__dirname, "../.."), "/src/data/tasks.json"));
+    this.writeDataToFile(dataString, join(__dirname, `${dataType}.json`));
+    this.writeDataToFile(dataString, join(resolve(__dirname, "../.."), `/src/data/${dataType}.json`));
   }
 
   writeDataToFile(data: string, file: string) {
