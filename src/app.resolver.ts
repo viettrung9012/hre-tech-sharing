@@ -21,9 +21,9 @@ export class AppResolver {
         const tasks = await this.dataService.getData(DataTypes.Task);
         return tasks.filter((task: Task) => {
             let filtered = true;
-            if (id) filtered = filtered && id === task.id;
-            if (priority) filtered = filtered && priority === task.priority;
-            if (category) filtered = filtered && category === task.category.name;
+            if (id !== undefined) filtered = filtered && id === task.id;
+            if (priority !== undefined) filtered = filtered && priority === task.priority;
+            if (category !== undefined) filtered = filtered && category === task.category.name;
             return filtered;
         });
     }
