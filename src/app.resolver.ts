@@ -1,6 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Task } from './graphql';
+import { Category, Task } from './graphql';
 import { DataService } from './data/data.service';
+import { DataTypes } from './data/config';
 
 @Resolver()
 export class AppResolver {
@@ -17,12 +18,12 @@ export class AppResolver {
       @Args('priority') priority?: number,
       @Args('category') category?: string
     ): Promise<Task[]> {
-        const tasks = await this.dataService.getData();
+        const tasks = await this.dataService.getData(DataTypes.Task);
         return tasks.filter((task: Task) => {
             let filtered = true;
-            if (id) filtered = filtered && id === task.id;
-            if (priority) filtered = filtered && priority === task.priority;
-            if (category) filtered = filtered && category === task.category;
+            if (id !== undefined) filtered = filtered && id === task.id;
+            if (priority !== undefined) filtered = filtered && priority === task.priority;
+            if (category !== undefined) filtered = filtered && category === task.category.name;
             return filtered;
         });
     }
@@ -34,11 +35,12 @@ export class AppResolver {
       @Args('category') category?: string,
       @Args('priority') priority?: number
     ): Promise<Task> {
-        const tasks = await this.dataService.getData();
+        const tasks: Task[] = await this.dataService.getData(DataTypes.Task);
+        const categoryObject = await this.getCategory(category);
         const lastId = tasks[tasks.length - 1].id;
-        const newTask = { id: lastId + 1, summary, dueDate, category, priority };
+        const newTask: Task = { id: lastId + 1, summary, dueDate, category: categoryObject, priority };
         const updatedTasks = tasks.concat(newTask);
-        this.dataService.updateDataFiles(updatedTasks);
+        this.dataService.updateDataFiles(updatedTasks, DataTypes.Task);
         return newTask;
     }
 
@@ -50,12 +52,13 @@ export class AppResolver {
       @Args('category') category?: string,
       @Args('priority') priority?: number
     ) {
-        const tasks = await this.dataService.getData();
+        const tasks = await this.dataService.getData(DataTypes.Task);
         const taskToBeUpdated = tasks.findIndex((task) => task.id === id);
         if (taskToBeUpdated === -1) return Error('Task not found');
-        const updatedDetails = this.deleteUndefinedKeys({ summary, dueDate, category, priority });
+        const categoryObject = await this.getCategory(category);
+        const updatedDetails = this.deleteUndefinedKeys({ summary, dueDate, category: categoryObject, priority });
         tasks[taskToBeUpdated] = Object.assign({}, tasks[taskToBeUpdated], updatedDetails);
-        this.dataService.updateDataFiles(tasks);
+        this.dataService.updateDataFiles(tasks, DataTypes.Task);
         return tasks[taskToBeUpdated];
     }
 
@@ -63,12 +66,20 @@ export class AppResolver {
     async deleteTask(
       @Args('id') id: number
     ) {
-        const tasks = await this.dataService.getData();
+        const tasks = await this.dataService.getData(DataTypes.Task);
         const taskToBeUpdated = tasks.findIndex((task) => task.id === id);
         if (taskToBeUpdated === -1) return Error('Task not found');
         tasks.splice(taskToBeUpdated, 1);
-        this.dataService.updateDataFiles(tasks);
+        this.dataService.updateDataFiles(tasks, DataTypes.Task);
         return `Task ${id} Deleted`;
+    }
+
+    async getCategory(categoryName: string): Promise<Category> {
+        if (categoryName) {
+            const categories: Category[] = await this.dataService.getData(DataTypes.Category);
+            return  categories.find((category) => category.name === categoryName);
+        }
+        return undefined;
     }
 
     deleteUndefinedKeys(data: any) {
