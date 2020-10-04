@@ -4,20 +4,29 @@
     "summary": "Create GraphQL endpoint",
     "dueDate": "03/10/20",
     "priority": 1,
-    "category": "work"
+    "category": {
+      "id": 0,
+      "name": "work"
+    }
   },
   {
     "id": 1,
     "summary": "Create REST endpoint",
     "dueDate": "04/10/20",
     "priority": 1,
-    "category": "work"
+    "category": {
+      "id": 0,
+      "name": "work"
+    }
   },
   {
     "id": 2,
     "summary": "Buy milk",
     "dueDate": "05/10/20",
     "priority": 3,
-    "category": "daily"
+    "category": {
+      "id": 1,
+      "name": "daily"
+    }
   }
 ]
