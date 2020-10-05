@@ -1,4 +1,4 @@
-import { writeFile } from "fs";
+import { writeFileSync } from "fs";
 import { join, resolve } from 'path';
 import { DataTypes } from './config';
 
@@ -16,9 +16,11 @@ export class DataService {
   }
 
   writeDataToFile(data: string, file: string) {
-    writeFile(file, data, function writeJSON(err) {
-      if (err) return console.log(err);
+    try {
       console.log("writing to " + file);
-    });
+      writeFileSync(file, data);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
