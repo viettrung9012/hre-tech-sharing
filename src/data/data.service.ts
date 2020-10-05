@@ -1,6 +1,7 @@
 import { writeFile } from "fs";
 import { join, resolve } from 'path';
 import { DataTypes } from './config';
+import { Category } from "src/graphql";
 
 
 export class DataService {
@@ -21,4 +22,24 @@ export class DataService {
       console.log("writing to " + file);
     });
   }
+  returnUndefinedKeys(data: any) {
+    for (const key of Object.keys(data)) {
+        if (data[key] === undefined)  data[key] = ""
+    }
+    return data;
+  }
+
+  deleteUndefinedKeys(data: any) {
+    for (const key of Object.keys(data)) {
+        if (data[key] === undefined) delete data[key]
+    }
+    return data;
+  }
+  async getCategory(categoryName: string): Promise<Category> {
+    if (categoryName) {
+        const categories: Category[] = await this.getData(DataTypes.Category);
+        return  categories.find((category) => category.name === categoryName);
+    }
+    return undefined;
+}
 }
